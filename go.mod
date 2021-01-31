@@ -1,3 +1,3 @@
-module main.go
+module microservice
 
 go 1.15
