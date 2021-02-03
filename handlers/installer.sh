@@ -10,6 +10,7 @@ git clone git://git.kernel.org/pub/scm/linux/kernel/git/jj/linux-apparmor.git li
 cd linux-apparmor
 make
 make install
+cd ..
 #Kernel config 
 var=$(uname -r | cut -d'.' -f1)
 if [ $var -gt 4 ]
@@ -20,6 +21,7 @@ else
    exit
    
 fi
+
 # checking linux security module (LSM) is available
 var=$(cat /sys/kernel/security/apparmor/|grep CONFIG_SECURITY /boot/config-`uname -r`|grep not) 
 if [ $var ]
@@ -27,3 +29,20 @@ then
    echo "Please check LSM settings"
 else
     echo "LSM Okay"
+git clone https://github.com/accuknox/KubeArmor.git
+cd KubeArmor
+cd contributions/bare-metal
+./setup.sh
+cd microk8s
+./install_microk8s.sh
+cd ..
+cd ..
+cd vagrant
+./setup.sh
+./create.sh
+ssh-keygen -> [Enter] -> [Enter] -> [Enter]
+vagrant up
+
+
+
+
