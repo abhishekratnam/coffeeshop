@@ -31,7 +31,7 @@ func main() {
 	postRouter.Use(ph.MiddlewareValidateProduct)
 
 	s := &http.Server{
-		Addr:         ":9090",
+		Addr:         ":9000",
 		Handler:      sm,
 		IdleTimeout:  120 * time.Second,
 		ReadTimeout:  1 * time.Second,
