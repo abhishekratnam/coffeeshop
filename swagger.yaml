@@ -1,0 +1,13 @@
+paths: {}
+responses:
+  noContent:
+    description: ""
+    headers:
+      id:
+        description: |-
+          The id of the product to delete from the database
+          in:path
+          required: true
+        format: int64
+        type: integer
+swagger: "2.0"
