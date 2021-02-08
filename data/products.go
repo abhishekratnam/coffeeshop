@@ -1,9 +1,7 @@
 package data
 
 import (
-	"encoding/json"
 	"fmt"
-	"io"
 	"regexp"
 	"time"
 
@@ -23,10 +21,6 @@ type Product struct {
 
 type Products []*Product
 
-func (p *Product) FromJSON(r io.Reader) error {
-	e := json.NewDecoder(r)
-	return e.Decode(p)
-}
 func (p *Product) Validate() error {
 	validate := validator.New()
 	validate.RegisterValidation("sku", validateSKU)
@@ -42,24 +36,38 @@ func validateSKU(fl validator.FieldLevel) bool {
 	}
 	return true
 }
-func (p *Products) ToJSON(w io.Writer) error {
-	e := json.NewEncoder(w)
-	return e.Encode(p)
-}
 func GetProducts() Products {
 	return productList
 }
-func AddProduct(p *Product) {
+func AddProduct(p Product) {
 	p.ID = getNextID()
-	productList = append(productList, p)
+	productList = append(productList, &p)
 }
-func UpdateProduct(id int, p *Product) error {
-	_, pos, err := findProduct(id)
-	if err != nil {
-		return err
+func DeleteProduct(id int) error {
+	i := findIndexByProductID(id)
+	if i == -1 {
+		return ErrProductNotFound
 	}
-	p.ID = id
-	productList[pos] = p
+
+	productList = append(productList[:i], productList[i+1])
+
+	return nil
+}
+func findIndexByProductID(id int) int {
+	for i, p := range productList {
+		if p.ID == id {
+			return i
+		}
+	}
+
+	return -1
+}
+func UpdateProduct(p Product) error {
+	i := findIndexByProductID(p.ID)
+	if i == -1 {
+		return ErrProductNotFound
+	}
+	productList[i] = &p
 	return nil
 }
 
